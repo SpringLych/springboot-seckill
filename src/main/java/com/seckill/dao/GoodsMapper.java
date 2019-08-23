@@ -2,7 +2,9 @@ package com.seckill.dao;
 
 import com.seckill.bean.Goods;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.seckill.bean.SeckillGoods;
 import com.seckill.vo.GoodsVo;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -17,12 +19,13 @@ import java.util.List;
  * @author lych
  * @since 2019-08-13
  */
+@Mapper
 public interface GoodsMapper extends BaseMapper<Goods> {
 
     /**
      * @return list goodsVO
      */
-    @Select("select g.*, gs.stock_count, gs.start_date, gs.end_date, gs.secill_price, gs.version " +
+    @Select("select g.*, gs.stock_count, gs.start_date, gs.end_date, gs.seckill_price, gs.version " +
             "from goods_seckill gs left join goods g on gs.goods_id = g.id")
     List<GoodsVo> listGoodsVo();
 
@@ -36,8 +39,8 @@ public interface GoodsMapper extends BaseMapper<Goods> {
      * @param goods
      */
     @Update("update goods_seckill set stock_count = stock_count - 1, version = version+1" +
-            "where goodsId= #{goodsId} and stock_count > 0 and version = #{version}")
-    int reduceStockByVersion(Goods goods);
+            "where goodsId= #{goodsId} and stock_count > 0")
+    int reduceStockByVersion(SeckillGoods goods);
 
 
     /**

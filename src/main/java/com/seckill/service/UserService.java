@@ -2,7 +2,6 @@ package com.seckill.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.seckill.bean.User;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.seckill.common.exception.GlobalException;
 import com.seckill.common.result.CodeMsg;
 import com.seckill.dao.UserMapper;
@@ -42,7 +41,7 @@ public class UserService {
         if (user != null) return user;
         // 缓存中没有 使用数据库
         user = userMapper.selectById(id);
-        // 存入焕春
+        // 存入缓存
         if (user != null) {
             redisServices.set(UserKey.getById, "" + id, User.class);
         }
@@ -51,11 +50,6 @@ public class UserService {
 
     /**
      * 缓存同步场景：更新密码
-     *
-     * @param token
-     * @param id
-     * @param formPass
-     * @return
      */
     public boolean updatePassword(String token, long id, String formPass) {
         User user = getById(id);
@@ -95,6 +89,7 @@ public class UserService {
         }
         //生成唯一id作为token
         String token = UUIDUtil.uuid();
+        // 延长有效期
         addCookie(response, token, user);
         return token;
     }
@@ -113,7 +108,6 @@ public class UserService {
 
     /**
      * 根据token获取用户信息
-     *
      */
     public User getByToken(HttpServletResponse response, String token) {
         if (StrUtil.isEmpty(token)) return null;

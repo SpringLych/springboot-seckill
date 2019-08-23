@@ -1,4 +1,4 @@
-package com.seckill.config.rabbitmq;
+package com.seckill.rabbitmq;
 
 import com.seckill.bean.User;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * @author LiYingChun
  * @date 2019/8/13
- * 消息体
+ * 秒杀信息 消息体
  */
 @Data
 public class SeckillMessage {

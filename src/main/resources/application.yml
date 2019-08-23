@@ -6,21 +6,25 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 
-  redis:
-    host: 149.129.78.187
-    port: 6379
-    timeout: 500
-    jedis:
-      pool:
-        max-idle: 500
-        max-wait: 500
-
   rabbitmq:
     host: 149.129.78.187
     port: 5672
     username: root
     password: 654321
+  thymeleaf:
+    #prefix: classpath:/templates/
+    suffix: .html
+    mode: LEGACYHTML5
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+  resources:
+    static-locations: classpath:/static/
 
-
-
-
+redis:
+  host: 149.129.78.187
+  port: 6379
+  timeout: 500
+  poolMaxTotal: 1000
+  poolMaxIdle: 500
+  poolMaxWait: 500

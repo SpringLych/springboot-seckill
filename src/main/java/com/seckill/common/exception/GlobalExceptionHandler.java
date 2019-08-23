@@ -4,7 +4,9 @@ import com.seckill.common.result.CodeMsg;
 import com.seckill.common.result.Result;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
  * @author LiYingChun
  * @date 2019/8/13
  */
+@ControllerAdvice
+@ResponseBody
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)

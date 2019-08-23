@@ -20,5 +20,5 @@ public class RedisConfig {
     private int timeout;
     private int poolMaxIdle;
     private int poolMaxWait;
-    private int poolMaxTotal = 500;
+    private int poolMaxTotal;
 }

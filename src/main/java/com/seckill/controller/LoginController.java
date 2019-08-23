@@ -23,7 +23,7 @@ public class LoginController {
     @Autowired
     UserService userService;
 
-    @RequestMapping
+    @RequestMapping("/to_login")
     public String toLogin() {
         return "login";
     }

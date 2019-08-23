@@ -1,6 +1,7 @@
 package com.seckill.redis;
 
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -11,6 +12,7 @@ import redis.clients.jedis.JedisPool;
  * 3. 实现Redis服务
  */
 @Service
+@Slf4j
 public class RedisServices {
 
     final
@@ -134,7 +136,7 @@ public class RedisServices {
     /**
      * 任意类型转化成字符串
      */
-    private <T> String beanToString(T value) {
+    public static <T> String beanToString(T value) {
         if (value == null) return null;
 
         Class<?> clazz = value.getClass();
@@ -154,7 +156,7 @@ public class RedisServices {
     /**
      * String 转化成任意类型
      */
-    private <T> T stringToBean(String str, Class<T> clazz) {
+    public static <T> T stringToBean(String str, Class<T> clazz) {
         if (str == null || str.length() <= 0 || clazz == null) {
             return null;
         }
@@ -165,6 +167,7 @@ public class RedisServices {
         } else if (clazz == String.class) {
             return (T) str;
         } else {
+            log.info("str to object: {}", str);
             return JSON.toJavaObject(JSON.parseObject(str), clazz);
         }
     }
