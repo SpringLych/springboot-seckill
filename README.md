@@ -1,22 +1,32 @@
-# Getting Started
+# seckill
 
-### Reference Documentation
-For further reference, please consider the following sections:
+## 技术栈
+* Spring Boot
+* MyBatis Plus
+* Redis
+* RabbitMQ
+* Thymeleaf
+* Lombok
+* Guava
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Web Starter](https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-developing-web-applications)
-* [Spring for RabbitMQ](https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-amqp)
-* [Thymeleaf](https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-spring-mvc-template-engines)
-* [Spring Data Redis (Access+Driver)](https://docs.spring.io/spring-boot/docs/{bootVersion}/reference/htmlsingle/#boot-features-redis)
+## 秒杀优化方案
+* 在前端页面增加拦截，通常为点击一次秒杀请求后不可再次点击，一次减少重复的请求
+* 充分利用缓存，秒杀商品是一个典型的读多写少的应用场景，充分利用缓存将大大提高并发量
 
-### Guides
-The following guides illustrate how to use some features concretely:
+## 技术点
+### 两次MD5加密
+* 第一次：将用户输入的密码和固定Salt通过MD5加密生成密码，进行网络间的传输，防止用户明文密码在网络进行传输
+* 第二次：讲该密码和随机生成的Salt通过MD5进行第二次加密，最后将第二次加密后的密码和第一次的固定Salt存数据库。防止数据库被盗后反推出密码
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
-* [Messaging with RabbitMQ](https://spring.io/guides/gs/messaging-rabbitmq/)
-* [Accessing data with MySQL](https://spring.io/guides/gs/accessing-data-mysql/)
-* [Handling Form Submission](https://spring.io/guides/gs/handling-form-submission/)
-* [Messaging with Redis](https://spring.io/guides/gs/messaging-redis/)
+### Session共享
+登录成功后，生成一个类似sessionId的东西（token）来标识用户，然后写入resopnse传递个客户端，客户端在随后的的过程中都在上传这个token，然后根据token 取得用户的信息
 
+也可使用Spring Session + Redis实现
+
+### 全局异常统一处理
+通过拦截所有异常，对各种异常进行相应的处理，当遇到异常就逐层上抛，一直抛到最终由一个统一的、专门负责异常处理的地方处理，这有利于对异常的维护。
+
+### 本地标记 + redis预处理 + RabbitMQ异步下单
+* 秒杀阶段使用本地标记标记用户秒杀过的商品，若被标记过直接返回秒杀，未被标记才查询Redis
+* 抢购开始前，将商品和库存数据同步到redis中，所有的抢购操作都在redis中进行处理，减少对数据库的访问
+* 使用RabbitMQ用异步队列处理下单，实际做了一层缓冲保护
